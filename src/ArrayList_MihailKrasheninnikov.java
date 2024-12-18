@@ -1,29 +1,63 @@
 import java.util.Arrays;
 import java.util.Comparator;
 
-public class ArrayList_MihailKrasheninnikov<E> implements IntensiveList<E>{
+/**
+ * Пользовательская реализация изменяемого списка.
+ * Этот класс реализует интерфейс {@link IntensiveList} и предоставляет базовые операции,
+ * такие как добавление, удаление и получение элементов, а также сортировка и разделение списка.
+ *
+ * @param <E> тип элементов в списке
+ */
+public class ArrayList_MihailKrasheninnikov<E> implements IntensiveList<E> {
 
+    /**
+     * Начальная ёмкость списка.
+     */
     private static final int INIT_CAPACITY = 10;
+    /**
+     * Массив, содержащий элементы списка.
+     */
     private Object[] elements;
+    /**
+     * Текущий размер списка.
+     */
     private int listSize = 0;
 
-    public ArrayList_MihailKrasheninnikov(){
+    /**
+     * Создаёт пустой список с начальной ёмкостью 10.
+     */
+    public ArrayList_MihailKrasheninnikov() {
         this(INIT_CAPACITY);
     }
 
-    public ArrayList_MihailKrasheninnikov(int init){
+    /**
+     * Создаёт пустой список с заданной начальной ёмкостью.
+     *
+     * @param init начальная ёмкость списка
+     * @throws IllegalArgumentException если начальная ёмкость меньше или равна 0
+     */
+    public ArrayList_MihailKrasheninnikov(int init) {
         if (init <= 0) {
             throw new IllegalArgumentException("Объем должен быть положительным");
         }
         elements = new Object[init];
     }
 
-
+    /**
+     * Возвращает количество элементов в списке.
+     *
+     * @return размер списка
+     */
     @Override
     public int size() {
         return listSize;
     }
 
+    /**
+     * Добавляет указанный элемент в конец списка.
+     *
+     * @param element элемент для добавления
+     */
     @Override
     public void add(E element) {
         if (listSize == elements.length) {
@@ -32,6 +66,14 @@ public class ArrayList_MihailKrasheninnikov<E> implements IntensiveList<E>{
         elements[listSize++] = element;
     }
 
+    /**
+     * Вставляет указанный элемент в указанную позицию списка.
+     * Сдвигает элемент, который находится на этой позиции (если есть), и все последующие элементы на одну позицию вправо.
+     *
+     * @param index индекс, по которому вставить элемент
+     * @param element элемент для добавления
+     * @throws IndexOutOfBoundsException если индекс выходит за пределы диапазона
+     */
     @Override
     public void add(int index, E element) {
         if (index < 0 || index > listSize) {
@@ -45,6 +87,13 @@ public class ArrayList_MihailKrasheninnikov<E> implements IntensiveList<E>{
         listSize++;
     }
 
+    /**
+     * Возвращает элемент по указанному индексу.
+     *
+     * @param index индекс элемента
+     * @return элемент, находящийся по указанному индексу
+     * @throws IndexOutOfBoundsException если индекс выходит за пределы диапазона
+     */
     @SuppressWarnings("unchecked")
     @Override
     public E get(int index) {
@@ -52,6 +101,14 @@ public class ArrayList_MihailKrasheninnikov<E> implements IntensiveList<E>{
         return (E) elements[index];
     }
 
+    /**
+     * Заменяет элемент на указанном индексе новым значением.
+     *
+     * @param index индекс элемента для замены
+     * @param element новый элемент
+     * @return старое значение элемента
+     * @throws IndexOutOfBoundsException если индекс выходит за пределы диапазона
+     */
     @SuppressWarnings("unchecked")
     @Override
     public E set(int index, E element) {
@@ -61,6 +118,13 @@ public class ArrayList_MihailKrasheninnikov<E> implements IntensiveList<E>{
         return oldValue;
     }
 
+    /**
+     * Удаляет элемент на указанном индексе.
+     *
+     * @param index индекс элемента для удаления
+     * @return удалённый элемент
+     * @throws IndexOutOfBoundsException если индекс выходит за пределы диапазона
+     */
     @SuppressWarnings("unchecked")
     @Override
     public E remove(int index) {
@@ -74,12 +138,22 @@ public class ArrayList_MihailKrasheninnikov<E> implements IntensiveList<E>{
         return removedValue;
     }
 
+    /**
+     * Очищает список, устанавливая его размер равным нулю.
+     */
     @Override
     public void clear() {
         elements = new Object[INIT_CAPACITY];
         listSize = 0;
     }
 
+    /**
+     * Сортирует список с использованием алгоритма быстрой сортировки.Дефолиное решени,
+     * решение из книги со стримами требует заимплиментить List<E>
+     *
+     * @param comparator компаратор для сравнения элементов
+     * @throws IllegalArgumentException если компаратор равен null
+     */
     @Override
     public void quickSort(Comparator<E> comparator) {
         if (comparator == null) {
@@ -88,6 +162,11 @@ public class ArrayList_MihailKrasheninnikov<E> implements IntensiveList<E>{
         quickSortRec(0, listSize - 1, comparator);
     }
 
+    /**
+     * Проверяет, отсортирован ли список.
+     *
+     * @return true, если список отсортирован, иначе false
+     */
     @SuppressWarnings("unchecked")
     @Override
     public boolean isSorted() {
@@ -100,6 +179,12 @@ public class ArrayList_MihailKrasheninnikov<E> implements IntensiveList<E>{
         return true;
     }
 
+    /**
+     * Разделяет список.
+     *
+     * @param size новый размер списка
+     * @throws IllegalArgumentException если размер некорректен
+     */
     @Override
     public void split(int size) {
         if (size < 0 || size > listSize) {
@@ -111,6 +196,13 @@ public class ArrayList_MihailKrasheninnikov<E> implements IntensiveList<E>{
         }
     }
 
+    /**
+     * Рекурсивный метод для выполнения быстрой сортировки.
+     *
+     * @param low начальный индекс
+     * @param high конечный индекс
+     * @param comparator компаратор для сравнения элементов
+     */
     private void quickSortRec(int low, int high, Comparator<E> comparator) {
         if (low < high) {
             final var pi = partition(low, high, comparator);
@@ -119,6 +211,14 @@ public class ArrayList_MihailKrasheninnikov<E> implements IntensiveList<E>{
         }
     }
 
+    /**
+     * Разделяет список на две части и возвращает индекс разделителя.
+     *
+     * @param low начальный индекс
+     * @param high конечный индекс
+     * @param comparator компаратор для сравнения элементов
+     * @return индекс разделителя
+     */
     @SuppressWarnings("unchecked")
     private int partition(int low, int high, Comparator<E> comparator) {
         final var pivot = (E) elements[high];
@@ -133,18 +233,35 @@ public class ArrayList_MihailKrasheninnikov<E> implements IntensiveList<E>{
         return i + 1;
     }
 
+    /**
+     * Обмен элементов списка по указанным индексам.
+     *
+     * @param i первый индекс
+     * @param j второй индекс
+     */
     private void swap(int i, int j) {
         final var temp = elements[i];
         elements[i] = elements[j];
         elements[j] = temp;
     }
 
+    /**
+     * Проверяет, что индекс находится в пределах допустимого диапазона.
+     *
+     * @param index индекс для проверки
+     * @throws IndexOutOfBoundsException если индекс выходит за пределы диапазона
+     */
     private void checkIndex(int index) {
         if (index < 0 || index >= listSize) {
             throw new IndexOutOfBoundsException("Неверный индекс: " + index);
         }
     }
 
+    /**
+     * Возвращает строковое представление объекта.
+     *
+     * @return строковое представление объекта
+     */
     @Override
     public String toString() {
         return "ArrayList_MihailKrasheninnikov{" +
